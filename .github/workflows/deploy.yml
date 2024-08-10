@@ -24,21 +24,22 @@ jobs:
       run: |
         docker build -t us-central1-docker.pkg.dev/kube-429706/my-app:${{ github.sha }} .
 
-   
-
-    - name: Push Docker image
+    - name: Authenticate Docker with Google Cloud
       run: |
-          # Authenticate with Google Cloud
           echo ${{ secrets.GCP_SA_KEY }} | gcloud auth activate-service-account --key-file=-
-          
-          # Configure Docker to use the Google Cloud credentials
           gcloud auth configure-docker us-central1-docker.pkg.dev
-          
-          # Tag the Docker image
-          docker tag my-app:${{ github.sha }} us-central1-docker.pkg.dev/kube-429706/my-app:${{ github.sha }}
-          
-          # Push the Docker image to Artifact Registry
-          docker push us-central1-docker.pkg.dev/kube-429706/my-app:${{ github.sha }}
+      env:
+          CLOUDSDK_METRICS_ENVIRONMENT: github-actions-setup-gcloud
+          CLOUDSDK_METRICS_ENVIRONMENT_VERSION: 1.1.1
+  
+    - name: Tag and Push Docker image
+      run: |
+          docker tag my-app:${{ github.sha }} us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-repo/my-app:${{ github.sha }}
+          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-repo/my-app:${{ github.sha }}
+      env:
+          CLOUDSDK_METRICS_ENVIRONMENT: github-actions-setup-gcloud
+          CLOUDSDK_METRICS_ENVIRONMENT_VERSION: 1.1.1
+  
       
 
     - name: Get GKE credentials
