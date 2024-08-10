@@ -22,21 +22,25 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-app:${{ github.sha }} .
+        docker build -t us-central1-docker.pkg.dev/kube-429706/my-app:${{ github.sha }} .
+
+    - name: Authenticate Docker with Google Cloud
+      run: |
+        echo ${{ secrets.GCP_SA_KEY }} | gcloud auth activate-service-account --key-file=-
+        gcloud auth configure-docker us-central1-docker.pkg.dev
 
     - name: Push Docker image
       run: |
-        docker push gcr.io/us-central1-docker.pkg.dev/kube-429706/my-app
-        
+        docker push us-central1-docker.pkg.dev/kube-429706/my-app:${{ github.sha }}
 
     - name: Get GKE credentials
       uses: google-github-actions/get-gke-credentials@v1
       with:
-        cluster_name: autopilot-cluster-1
+        cluster_name: my-cluster
         location: us-central1-a
 
     - name: Deploy to GKE
       run: |
         kubectl apply -f deployment.yaml
         kubectl apply -f service.yaml
-        kubectl apply -f ingress.yaml # Optional, if using Ingress
+        kubectl apply -f ingress.yaml # Optional
