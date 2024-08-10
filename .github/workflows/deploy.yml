@@ -26,7 +26,11 @@ jobs:
   
     - name: Tag and Push Docker image
       run: |
-        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-app:${{ github.sha }}
+        docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/my-app/webpage:latest
+
+        docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/my-app/webpage:latest
+
+        # docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-app:${{ github.sha }}
 
       env:
           CLOUDSDK_METRICS_ENVIRONMENT: github-actions-setup-gcloud
