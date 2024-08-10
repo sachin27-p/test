@@ -20,22 +20,15 @@ jobs:
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         install_components: 'beta,alpha'
 
-    - name: Build Docker image
-      run: |
-        docker build -t us-central1-docker.pkg.dev/kube-429706/my-app:${{ github.sha }} .
-  
-    - name:        Push Docker image
+    - name: Build and Push Docker image
+      env:
+        GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT_ID }}
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev
-
-        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-app/my-app${{ github.sha }}
-
-        # docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-app/my-app:${{ github.sha }}
-
-      env:
-          CLOUDSDK_METRICS_ENVIRONMENT: github-actions-setup-gcloud
-          CLOUDSDK_METRICS_ENVIRONMENT_VERSION: 1.1.1
-  
+        docker build -t us-central1-docker.pkg.dev/kube-429706/my-app/my-app:latest .
+        docker push us-central1-docker.pkg.dev/kube-429706/my-app/my-app:latest
+        
+      
       
 
     - name: Get GKE credentials
