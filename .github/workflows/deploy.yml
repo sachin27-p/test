@@ -26,7 +26,8 @@ jobs:
 
     - name: Push Docker image
       run: |
-        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-app:${{ github.sha }}
+        docker push gcr.io/us-central1-docker.pkg.dev/kube-429706/my-app
+        
 
     - name: Get GKE credentials
       uses: google-github-actions/get-gke-credentials@v1
