@@ -24,10 +24,7 @@ jobs:
       run: |
         docker build -t us-central1-docker.pkg.dev/kube-429706/my-app:${{ github.sha }} .
 
-    - name: Authenticate Docker with Google Cloud
-      run: |
-        echo ${{ secrets.GCP_SA_KEY }} | gcloud auth activate-service-account --key-file=-
-        gcloud auth configure-docker us-central1-docker.pkg.dev
+   
 
     - name: Push Docker image
       run: |
