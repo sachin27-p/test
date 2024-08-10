@@ -1,9 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app-deployment
+  name: my-app
+  labels:
+    app: my-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: my-app
@@ -14,6 +16,6 @@ spec:
     spec:
       containers:
       - name: my-app
-        image: gcr.io/kube-429706/my-app:latest
+        image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-app:${{ github.sha }}
         ports:
         - containerPort: 5040
