@@ -23,14 +23,6 @@ jobs:
     - name: Build Docker image
       run: |
         docker build -t us-central1-docker.pkg.dev/kube-429706/my-app:${{ github.sha }} .
-
-    - name: Authenticate Docker with Google Cloud
-      run: |
-          echo ${{ secrets.GCP_SA_KEY }} | gcloud auth activate-service-account --key-file=-
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-      env:
-          CLOUDSDK_METRICS_ENVIRONMENT: github-actions-setup-gcloud
-          CLOUDSDK_METRICS_ENVIRONMENT_VERSION: 1.1.1
   
     - name: Tag and Push Docker image
       run: |
